@@ -1,0 +1,95 @@
+﻿@page "/teams"
+@using TeamDayApp.Models
+
+<h3>Team Tabs</h3>
+
+<select @onchange="OnTeamChanged">
+    <option value="">-- Select a team --</option>
+    @foreach (var team in AddedTeams)
+    {
+        <option value="@team.Name">@team.Name</option>
+    }
+</select>
+
+@if (SelectedTeam is not null)
+{
+    <h4>@SelectedTeam.Name</h4>
+
+    <div class="tab-buttons">
+        @foreach (var tab in Tabs)
+        {
+            <button @onclick="() => CurrentTab = tab">@tab</button>
+        }
+    </div>
+
+    <div class="tab-content">
+        @if (CurrentTab == "Members")
+        {
+            <Members Members="SelectedTeam.Members" />
+        }
+        else if (CurrentTab == "Availability")
+        {
+            <p>[Availability comparison placeholder]</p>
+        }
+        else if (CurrentTab == "Team Day")
+        {
+            <p>[Team day decision placeholder]</p>
+        }
+        else if (CurrentTab == "Restaurants")
+        {
+            <p>[Restaurants tab placeholder]</p>
+        }
+    </div>
+}
+
+@code {
+    private List<Team> AddedTeams = new();
+    private Team? SelectedTeam;
+    private string CurrentTab = "Members";
+    private List<string> Tabs = new() { "Members", "Availability", "Team Day", "Restaurants" };
+
+    protected override void OnInitialized()
+    {
+        // Dummy data na start – docelowo będzie z bazy lub API
+        AddedTeams = new List<Team>
+        {
+            new Team
+            {
+                Name = "Dev Team",
+                Members = new List<Member>
+                {
+                    new Member
+{
+    Name = "Alice",
+    Availability = new Dictionary<DateOnly, AvailabilityOption>
+    {
+        [DateOnly.FromDateTime(DateTime.Today)] = AvailabilityOption.Available
+    }
+}
+                }
+            },
+            new Team
+            {
+                Name = "QA Team",
+                Members = new List<Member>
+                {
+                    new Member
+{
+    Name = "Alice",
+    Availability = new Dictionary<DateOnly, AvailabilityOption>
+    {
+        [DateOnly.FromDateTime(DateTime.Today)] = AvailabilityOption.Available
+    }
+}
+                }
+            }
+        };
+    }
+
+    private void OnTeamChanged(ChangeEventArgs e)
+    {
+        var selectedName = e.Value?.ToString();
+        SelectedTeam = AddedTeams.FirstOrDefault(t => t.Name == selectedName);
+        CurrentTab = "Members"; // reset do pierwszej zakładki
+    }
+}

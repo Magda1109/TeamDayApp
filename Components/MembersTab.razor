@@ -1,0 +1,35 @@
+﻿@using TeamDayApp.Models
+@using System.ComponentModel
+
+@if (Members is not null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Members)
+            {
+                <tr>
+                    <td>@member.Name</td>
+                    <td>
+                        <select @bind="member.Availability">
+                            @foreach (AvailabilityOption option in Enum.GetValues(typeof(AvailabilityOption)))
+                            {
+                                <option value="@option">@option.GetDescription()</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public List<Member> Members { get; set; } = new();
+}
